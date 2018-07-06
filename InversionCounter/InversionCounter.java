@@ -1,42 +1,54 @@
 public class InversionCounter {
 
-	public static int[] mergeSort(int[] array) {
-		int[] temp = new int[array.length];
-		_mergeSort(array, temp, 0, array.length-1);
-		return temp;
+	public static void mergeSort(int[] array) {
+		_mergeSort(array, 0, array.length-1);
 	}
 
-	public static void _mergeSort(int[] array, int[] temp, int i, int j) {
-		if(i == j) {
-			return;
+	public static void _mergeSort(int array[], int start, int end) {
+		int middle = (start+end)/2;
+
+		if(start < end) {
+			_mergeSort(array, start, middle);
+			_mergeSort(array, middle+1, end);
+			merge(array, start, end);
+		}
+	}
+
+	public static void merge(int array[], int start, int end) {
+		int middle = (start+end)/2;
+		int[] newArray = new int[end-start+1];
+		int i = start;
+		int j = middle+1;
+		int k = 0;
+
+		while(i <= middle && j <= end) {
+			if(array[i] <= array[j]) {
+				newArray[k++] = array[i++];
+			} else {
+				newArray[k++] = array[j++];
+			}
 		}
 
-		int mid = (i+j)/2;
+		while(i <= middle) {
+			newArray[k++] = array[i++];
+		}
 
-	    _mergeSort(array, temp, i, mid);
-		_mergeSort(array, temp, mid+1, j);
-		merge(array, temp,  i, mid, j);
-	}
+		while(j <= end) {
+			newArray[k++] = array[j++];
+		}
 
-	public static void merge(int[] array, int[] temp, int i, int mid, int j) {
-		int tempMid = mid+1;
-		int k = i;
-		while(i <= tempMid && tempMid <= j) {
-			if(array[i] <= array[mid+1]) {
-				temp[k++] = array[i++];
-			} else {
-				temp[k++] = array[tempMid++];
-			}
-		}	
+		for(i = 0; i < newArray.length; i++) {
+			array[i+start] = newArray[i];
+		}
 	}
 
 
 	public static void main(String args[]) {
 		int[] array = {3,5,2,5,7,3,2,1};
-		int[] response = mergeSort(array);
+		mergeSort(array);
 		System.out.println("Termino\n");
-		for(int i = 0; i < response.length; i++) {
-			System.out.print(response[i] + " ");
+		for(int x: array) {
+			System.out.print(x +" ");
 		}
 	}
 }
