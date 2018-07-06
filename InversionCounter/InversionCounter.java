@@ -4,55 +4,55 @@ import java.io.File;
 
 public class InversionCounter {
 
-	public static int mergeSort(int[] array) {
-		int ans = _mergeSort(array, 0, array.length-1);
-		return ans;
+	public static long mergeSort(int[] array) {
+		int[] temp = new int[array.length];
+		return _mergeSort(array, temp, 0, array.length-1);
 	}
 
-	public static int _mergeSort(int array[], int start, int end) {
-		int middle = (start+end)/2;
+	public static long _mergeSort(int array[], int temp[], int start, int end) {
+		int middle = 0;
+		long count = 0;
 
-		int inv = 0;
-		if(start < end) {
-			inv += _mergeSort(array, start, middle);
-			inv += _mergeSort(array, middle+1, end);
-			inv += merge(array, start, end);
-			return inv;
+		if(end > start) {
+			middle = (start+end)/2;
+
+			count = _mergeSort(array, temp, start, middle);
+			count += _mergeSort(array, temp, middle+1, end);
+			count += merge(array, temp, start, middle, end);
+			return count;
 		}
 
-		return inv;
+		return count;
 	}
 
-	public static int merge(int array[], int start, int end) {
-		int middle = (start+end)/2;
-		int[] newArray = new int[end-start+1];
+	public static long merge(int array[], int temp[], int start, int middle, int end) {
 		int i = start;
 		int j = middle+1;
-		int k = 0;
-		int inv = 0;
+		int k = start;
+		long count = 0;
 
 		while(i <= middle && j <= end) {
 			if(array[i] <= array[j]) {
-				newArray[k++] = array[i++];
+				temp[k++] = array[i++];
 			} else {
-				inv += (j-i);
-				newArray[k++] = array[j++];
+				temp[k++] = array[j++];
+				count += (middle+1-i);
 			}
 		}
 
 		while(i <= middle) {
-			newArray[k++] = array[i++];
+			temp[k++] = array[i++];
 		}
 
 		while(j <= end) {
-			newArray[k++] = array[j++];
+			temp[k++] = array[j++];
 		}
 
-		for(i = 0; i < newArray.length; i++) {
-			array[i+start] = newArray[i];
+		for(i = start; i <= end; i++) {
+			array[i] = temp[i];
 		}
 
-		return inv;
+		return count;
 	}
 
 	public static int[] fileToIntArray(String fileName) {
@@ -78,7 +78,7 @@ public class InversionCounter {
 
 	public static void main(String args[]) {
 		int[] array = fileToIntArray("./test.txt");
-		int ans = mergeSort(array);
+		long ans = mergeSort(array);
 		System.out.println(ans);
 	}
 }
